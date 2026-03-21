@@ -3,12 +3,12 @@
 ## Tech stack
 - Spring Boot (Java 21) and Vue 3 + TypeScript
 
-## Structure
+### Structure
 - "backend/" - Spring Boot REST API
 - "frontend/" - Vue 3 application, which will probably be only a single page
 - might make a "docs/" module for a UML diagram or two if I have time, but not crucial for now
 
-## Components
+### Components
 - "DecisionEngine" - For core loan decision logic
 - "CreditRegistry" - Will map personal codes to credit profiles
 - "LoanController" - Just for the single REST endpoint

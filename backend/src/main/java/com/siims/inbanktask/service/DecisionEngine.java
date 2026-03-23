@@ -15,27 +15,13 @@ public class DecisionEngine {
 
     private final CreditRegistry creditRegistry;
 
-    /**
-     * Constructs a DecisionEngine with the required credit registry.
-     *
-     * @param creditRegistry the credit registry service used to fetch applicant credit profiles
-     */
     public DecisionEngine(CreditRegistry creditRegistry) {
         this.creditRegistry = creditRegistry;
     }
 
-    /**
-     * Evaluates a loan application based on the applicant's credit profile.
-     *
-     * @param personalCode    the unique identifier of the applicant
-     * @param requestedAmount the amount of credit requested
-     * @param requestedPeriod the requested loan period in months
-     * @return a LoanDecision indicating whether it was approved or not. If approved, return amount and period
-     */
     public LoanDecision evaluate(String personalCode, int requestedAmount, int requestedPeriod) {
         CreditProfile profile = creditRegistry.getProfile(personalCode);
 
-        // TODO: add loan search logic
         if (profile.hasDebt()) {
             return LoanDecision.negative();
         }
@@ -48,5 +34,39 @@ public class DecisionEngine {
         }
 
         return LoanDecision.negative();
+    }
+
+    /**
+     * Finds the highest approvable amount for the given period.
+     */
+    private int findBestAmount(int creditModifier, int requestedAmount, int period) {
+        // Valid request amount. Search up for maximum amount
+        if (creditScore(creditModifier, requestedAmount, period) >= 1.0) {
+            int best = requestedAmount;
+            for (int amount = requestedAmount; amount <= LoanConstraints.MAX_LOAN_AMOUNT; amount += 100) {
+                if (creditScore(creditModifier, amount, period) >= 1.0) {
+                    best = amount;
+                } else {
+                    break;
+                }
+            }
+            return best;
+        } else {
+            // Invalid request amount.
+            for (int amount = requestedAmount; amount >= LoanConstraints.MIN_LOAN_AMOUNT; amount -= 100) {
+                if (creditScore(creditModifier, amount, period) >= 1.0) {
+                    return amount;
+                }
+            }
+            return 0;
+        }
+    }
+
+    /**
+     * credit score = (creditModifier / loanAmount) * loanPeriod
+     * Score >= 1.0 means the loan can be approved.
+     */
+    private double creditScore(int creditModifier, int amount, int period) {
+        return ((double) creditModifier / amount) * period;
     }
 }

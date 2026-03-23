@@ -1,5 +1,6 @@
 package com.siims.inbanktask.service;
 
+import com.siims.inbanktask.constants.LoanConstraints;
 import com.siims.inbanktask.model.CreditProfile;
 import com.siims.inbanktask.model.LoanDecision;
 import com.siims.inbanktask.registry.CreditRegistry;
@@ -37,6 +38,13 @@ public class DecisionEngine {
         // TODO: add loan search logic
         if (profile.hasDebt()) {
             return LoanDecision.negative();
+        }
+
+        for (int period = requestedPeriod; period <= LoanConstraints.MAX_LOAN_PERIOD; period++) {
+            int amount = findBestAmount(profile.creditModifier(), requestedAmount, period);
+            if (amount >= LoanConstraints.MIN_LOAN_AMOUNT) {
+                return LoanDecision.positive(amount, period);
+            }
         }
 
         return LoanDecision.negative();

@@ -28,7 +28,7 @@ public class DecisionEngine {
 
         for (int period = requestedPeriod; period <= LoanConstraints.MAX_LOAN_PERIOD; period++) {
             int amount = findBestAmount(profile.creditModifier(), requestedAmount, period);
-            if (amount >= LoanConstraints.MIN_LOAN_AMOUNT) {
+            if (amount >= LoanConstraints.MIN_LOAN_PERIOD) {
                 return LoanDecision.positive(amount, period);
             }
         }
@@ -40,7 +40,7 @@ public class DecisionEngine {
      * Finds the highest approvable amount for the given period.
      */
     private int findBestAmount(int creditModifier, int requestedAmount, int period) {
-        // Valid request amount. Search up for maximum amount
+        // Valid request amount, search up for maximum amount
         if (creditScore(creditModifier, requestedAmount, period) >= 1.0) {
             int best = requestedAmount;
             for (int amount = requestedAmount; amount <= LoanConstraints.MAX_LOAN_AMOUNT; amount += 100) {
@@ -52,7 +52,7 @@ public class DecisionEngine {
             }
             return best;
         } else {
-            // Invalid request amount.
+            // Invalid request amount, search downwards
             for (int amount = requestedAmount; amount >= LoanConstraints.MIN_LOAN_AMOUNT; amount -= 100) {
                 if (creditScore(creditModifier, amount, period) >= 1.0) {
                     return amount;

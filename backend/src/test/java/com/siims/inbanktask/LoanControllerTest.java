@@ -47,8 +47,7 @@ class LoanControllerTest {
     @Test
     void negativeDecision_returnsUnapprovedDecision() {
         when(decisionEngine.evaluate("49002010965", 5000, 24))
-                .thenReturn(LoanDecision.negative());
-
+                .thenReturn(LoanDecision.negative("Loan rejected due to existing debt."));
         ResponseEntity<LoanDecision> response = controller.getDecision(
                 new LoanRequest("49002010965", 5000, 24));
 

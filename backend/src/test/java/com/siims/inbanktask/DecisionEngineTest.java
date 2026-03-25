@@ -63,7 +63,7 @@ class DecisionEngineTest {
     @Test
     void noValidCombinationExists_negative_2() {
         // modifier is 10, no valid combination at any period
-        LoanDecision decision = engine.evaluate("49002010943", 5000, 24);
+        LoanDecision decision = engine.evaluate("49002019043", 5000, 24);
         assertFalse(decision.approved());
     }
 
@@ -87,5 +87,27 @@ class DecisionEngineTest {
         // modifier is 100, score at amount 2000 period 20 is exactly 1.0 so it should be valid
         LoanDecision decision = engine.evaluate("49002010976", 2000, 20);
         assertTrue(decision.approved());
+    }
+
+    @Test
+    void veryLowModifier_noValidLoan() {
+        // modifier is 50 so it should fail
+        LoanDecision decision = engine.evaluate("49002010911", 5000, 24);
+        assertFalse(decision.approved());
+    }
+
+    @Test
+    void lowMediumModifier_returnsReducedAmount() {
+        // modifier is 200 so it should not return max amount
+        LoanDecision decision = engine.evaluate("49002010922", 10000, 12);
+        assertTrue(decision.approved());
+        assertTrue(decision.amount() < 10000);
+    }
+
+    @Test
+    void secondDebtor_alwaysRejected() {
+        // has debt so application should always be rejected
+        LoanDecision decision = engine.evaluate("49002010944", 3000, 24);
+        assertFalse(decision.approved());
     }
 }

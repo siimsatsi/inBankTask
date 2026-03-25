@@ -55,4 +55,39 @@ class CreditRegistryTest {
         assertThrows(IllegalArgumentException.class, () ->
                 registry.getProfile("00000000000"));
     }
+
+    @Test
+    void veryLowModifierCode_returnsCorrectProfile() {
+        CreditProfile profile = registry.getProfile("49002010911");
+        assertFalse(profile.hasDebt());
+        assertEquals(30, profile.creditModifier());
+    }
+
+    @Test
+    void lowMediumModifierCode_returnsCorrectProfile() {
+        CreditProfile profile = registry.getProfile("49002010922");
+        assertFalse(profile.hasDebt());
+        assertEquals(200, profile.creditModifier());
+    }
+
+    @Test
+    void mediumHighModifierCode_returnsCorrectProfile() {
+        CreditProfile profile = registry.getProfile("49002010933");
+        assertFalse(profile.hasDebt());
+        assertEquals(500, profile.creditModifier());
+    }
+
+    @Test
+    void secondDebtorCode_returnsProfileWithDebt() {
+        CreditProfile profile = registry.getProfile("49002010944");
+        assertTrue(profile.hasDebt());
+        assertEquals(0, profile.creditModifier());
+    }
+
+    @Test
+    void veryHighModifierCode_returnsCorrectProfile() {
+        CreditProfile profile = registry.getProfile("49002010955");
+        assertFalse(profile.hasDebt());
+        assertEquals(1500, profile.creditModifier());
+    }
 }

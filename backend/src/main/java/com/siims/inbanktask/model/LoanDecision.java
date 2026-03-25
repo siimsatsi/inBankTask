@@ -3,15 +3,15 @@ package com.siims.inbanktask.model;
 /**
  * Represents a loan decision with approval status, amount, and period.
  */
-public record LoanDecision(boolean approved, int amount, int period) {
+public record LoanDecision(boolean approved, int amount, int period, String reason) {
 
     /**
      * Creates a negative. Meaning the loan was not approved.
      *
      * @return a new LoanDecision instance with approved=false, amount=0, period=0
      */
-    public static LoanDecision negative() {
-        return new LoanDecision(false, 0, 0);
+    public static LoanDecision negative(String reason) {
+        return new LoanDecision(false, 0, 0, reason);
     }
 
     /**
@@ -22,6 +22,6 @@ public record LoanDecision(boolean approved, int amount, int period) {
      * @return a new LoanDecision instance with approved=true + the given amount and period
      */
     public static LoanDecision positive(int amount, int period) {
-        return new LoanDecision(true, amount, period);
+        return new LoanDecision(true, amount, period, null);
     }
 }

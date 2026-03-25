@@ -23,17 +23,17 @@ public class DecisionEngine {
         CreditProfile profile = creditRegistry.getProfile(personalCode);
 
         if (profile.hasDebt()) {
-            return LoanDecision.negative();
+            return LoanDecision.negative("Loan rejected due to existing debt");
         }
 
         for (int period = requestedPeriod; period <= LoanConstraints.MAX_LOAN_PERIOD; period++) {
             int amount = findBestAmount(profile.creditModifier(), requestedAmount, period);
-            if (amount >= LoanConstraints.MIN_LOAN_PERIOD) {
+            if (amount >= LoanConstraints.MIN_LOAN_AMOUNT) {
                 return LoanDecision.positive(amount, period);
             }
         }
 
-        return LoanDecision.negative();
+        return LoanDecision.negative("No valid loan combination found for your credit profile.");
     }
 
     /**

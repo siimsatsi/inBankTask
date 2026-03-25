@@ -12,6 +12,7 @@ export interface LoanDecision {
     approved: boolean
     amount: number
     period: number
+    reason: string | null
 }
 
 export async function getLoanDecision(request: LoanRequest): Promise<LoanDecision> {

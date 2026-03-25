@@ -15,7 +15,8 @@ public class HardcodedCreditRegistry implements CreditRegistry {
             "49002010965", new CreditProfile(true, 0),
             "49002010976", new CreditProfile(false, 100),
             "49002010987", new CreditProfile(false, 300),
-            "49002010998", new CreditProfile(false, 1000)
+            "49002010998", new CreditProfile(false, 1000),
+            "49002019043", new CreditProfile(false, 10)
     );
 
     @Override
